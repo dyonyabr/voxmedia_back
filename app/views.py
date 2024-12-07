@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from rest_framework import viewsets
+from django_filters import rest_framework as filters
 
 from .models import User, Post, Comment, Favorite
 from .serializers import (
@@ -11,7 +12,15 @@ from .serializers import (
 )
 
 
+class UserFilter(filters.FilterSet):
+    class Meta:
+        model = User
+        fields = ["name", "password"]
+
+
 class UserViewSet(viewsets.ModelViewSet):
+    filter_backends = (filters.DjangoFilterBackend,)
+    filterset_class = UserFilter
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
